@@ -1,0 +1,75 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<a href="{% url 'register-patient' %}">Register Patient</a>
+<hr>
+<h1>Patients Information</h1>
+<div>
+<table style="width:100%", border = "1px solid black">
+    <tr>
+        <th>Medical Id</th>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>Gender</th>
+        <th>Date of birth</th>
+        <th>Age</th>
+        <th>Race</th>
+        <th>Phone</th>
+        <th>Address</th>
+        <th>Zip code</th>
+        <th>Email</th>
+        <th>Maratial status</th>
+        <th>SNN</th>
+        <th>Preferred language</th>
+        <th>Action</th>
+    </tr>
+    {% for patient in patients %}
+    <tr>
+        <td>{{patient.0}}</td>
+        <td>{{patient.1}}</td>
+        <td>{{patient.2}}</td>
+        <td>{{patient.3}}</td>
+        <td>{{patient.4}}</td>
+        <td>{{patient.5}}</td>
+        <td>{{patient.6}}</td>
+        <td>{{patient.7}}</td>
+        <td>{{patient.8}}</td>
+        <td>{{patient.9}}</td>
+        <td>{{patient.10}}</td>
+        <td>{{patient.11}}</td>
+        <td>{{patient.12}}</td>
+        <td>{{patient.13}}</td>
+        <td><a href="{% url 'update-patient' patient.0 %}">Edit</a> 
+            <span>|</span> 
+            <a href="{% url 'delete-patient' patient.0 %}">Delete</a>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+<hr>
+<h1>List of all visits to the clinic</h1>
+<div>
+<table style="width:100%", border = "1px solid black">
+    <tr>
+        <th>Medical Id</th>
+        <th>Patient name</th>
+        <th>Status</th>
+        <th>Date of visit</th>
+        <th>Time</th>
+        <th>Diagnoses</th>
+        <th>Doctor name</th>
+    </tr>
+    {% for visit in visits %}
+    <tr>
+        <td>{{visit.0}}</td>
+        <td>{{visit.1}}</td>
+        <td>{{visit.2}}</td>
+        <td>{{visit.3}}</td>
+        <td>{{visit.4}}</td>
+        <td>{{visit.5}}</td>
+        <td>{{visit.6}}</td>        
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock content %}
