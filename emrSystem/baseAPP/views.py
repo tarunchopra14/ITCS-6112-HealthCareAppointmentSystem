@@ -18,9 +18,10 @@ def home(request):
 def registerPatient(request):
     form = PatientInformationForm()
     if request.method == 'POST':
-        if form.is_valid:
+        if form.is_valid():
             add_patient(request.POST)
             return redirect('emrSystem')
+    
     context = {'form' : form}
     return render(request, 'patient_form.html', context)
 
