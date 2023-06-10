@@ -5,8 +5,9 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
+import re
 from django.db import models
-
+from django.core.exceptions import ValidationError
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
@@ -228,20 +229,101 @@ class PatientEmergencyContactInformation(models.Model):
         db_table = 'patient_emergency_contact_information'
 
 
+
+
+
+
+# Check if numbers or symbols are used
+def nameValidation(val):
+    if re.match('([^A-Za-zÀ-ȕ ]+)', str(val)):
+        raise ValidationError("Only letters allowed in names")
+
+# Limit age to be within 0-125
+def ageValidation(val):
+    if re.match('^(0?[0-9]|[1-9][0-9]|[1][0-2][0-5])$', str(val)) == None:
+        raise ValidationError("Only ages 0-125 allowed")
+
+# Checks for XXX-XXX-XXXX format and that digits are used
+def phoneValidation(val):
+    if re.match('^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$', str(val)) == None:
+        raise ValidationError("Phone number is in wrong format")
+
+# Checks for XXX-XX-XXXX format and that SSN can possibly exist
+def ssnValidation(val):
+    if str(val) != "":
+        if re.match('^(?!666|000|9\d{2})\d{3}-(?!00)\d{2}-(?!0{4})\d{4}$', str(val)) == None:
+            raise ValidationError("SSN is in wrong format or incorrect")
+
+# Checks for YYYY-MM-DD or YYYY/MM/DD format and that year is in range 1900-2023, month is in range 1-12, and day is in range 1-31
+def dobValidation(val):
+    if re.match('^(1[9][0-9][0-9]|2[0][0-2][0-3])\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$', str(val)) == None:
+        raise ValidationError("Date of Birth is in wrong format or incorrect")
+
+# Check if address contains only valid characters
+def addressValidation(val):
+    if str(val) != "":
+        if re.match("[\w',-\\/.\s]", str(val)) == None:
+            raise ValidationError("Address contains invalid characters")
+
+# Dropdown options for marital status
+MARITAL_STATUS_CHOICES= [
+    ('Married', 'Married'),
+    ('Divorced', 'Divorced'),
+    ('Separated', 'Separated'),
+    ('Widowed', 'Widowed'),
+    ('Never married', 'Never married'),
+    ]
+
+# Dropdown options for preferred language
+LANGUAGE_CHOICES= [
+    ('English', 'English'),
+    ('Spanish', 'Spanish'),
+    ('French', 'French'),
+    ('Mandarin', 'Mandarin'),
+    ('Cantonese', 'Cantonese'),
+    ('Hokkien', 'Hokkien'),
+    ('Tagalog', 'Tagalog'),
+    ('Vietnamese', 'Vietnamese'),
+    ('Arabic', 'Arabic'),
+    ('Korean', 'Korean'),
+    ('Russian', 'Russian'),
+    ('German', 'German'),
+    ('Other', 'Other'),
+    ]
+
+# Dropdown options for gender
+GENDER_CHOICES= [
+    ('Male', 'Male'),
+    ('Female', 'Female'),
+    ('Other', 'Other'),
+    ('Prefer not to say', 'Prefer not to say'),
+    ]
+
+# Dropdown options for race
+RACE_CHOICES= [
+    ('American Indian or Alaska Native', 'American Indian or Alaska Native'),
+    ('Asian', 'Asian'),
+    ('Black or African American', 'Black or African American'),
+    ('Native Hawaiian or Other Pacific Islander', 'Native Hawaiian or Other Pacific Islander'),
+    ('White or Caucasian', 'White or Caucasian'),
+    ('Two or More Races', 'Two or More Races'),
+    ('Prefer not to say', 'Prefer not to say'),
+    ]
+
 class PatientInformation(models.Model):
-    first_name = models.CharField(max_length=20)
-    last_name = models.CharField(max_length=20)
-    gender = models.CharField(max_length=10)
-    date_of_birth = models.DateField()
-    age = models.IntegerField()
-    race = models.CharField(max_length=20)
-    phone = models.CharField(max_length=20)
-    address = models.CharField(max_length=30)
-    zip_code = models.ForeignKey('ZipCode', models.DO_NOTHING, db_column='zip_code', blank=True, null=True)
-    email = models.CharField(max_length=30)
-    maratial_status = models.CharField(max_length=10, blank=True, null=True)
-    snn = models.CharField(max_length=20, blank=True, null=True)
-    preferred_language = models.CharField(max_length=20, blank=True, null=True)
+    first_name = models.CharField('* First Name', max_length=20, validators=[nameValidation])
+    last_name = models.CharField('* Last Name', max_length=20, validators=[nameValidation])
+    gender = models.CharField('* Gender', max_length=20, choices=GENDER_CHOICES)
+    date_of_birth = models.DateField('* Date of Birth', help_text= '(use format: YYYY-MM-DD or YYYY/MM/DD)', validators=[dobValidation])
+    age = models.IntegerField('* Age', validators=[ageValidation])
+    race = models.CharField('* Race', max_length=50, choices=RACE_CHOICES)
+    phone = models.CharField('* Phone', max_length=20, validators=[phoneValidation], help_text= '(use format: XXX-XXX-XXXX)')
+    address = models.CharField('Address', max_length=30, validators=[addressValidation], blank=True)
+    zip_code = models.ForeignKey('ZipCode', models.DO_NOTHING, db_column='zip_code', verbose_name= 'ZIP Code', blank=True, null=True)
+    email = models.EmailField('* Email', max_length=40)
+    maratial_status = models.CharField('Marital Status', max_length=15, choices=MARITAL_STATUS_CHOICES, blank=True, null=True)
+    snn = models.CharField('SSN', max_length=20, validators=[ssnValidation], blank=True, null=True, help_text= '(use format: XXX-XX-XXXX)')
+    preferred_language = models.CharField('Preferred Language', max_length=20, choices=LANGUAGE_CHOICES, blank=True, null=True)
 
     class Meta:
         managed = False
