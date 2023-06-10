@@ -10,9 +10,11 @@
                 <form method="POST" action="" class="text-center">
                     {% csrf_token %}
                     <div class="form-group">
-                        <a id="goBack" href="{{request.META.HTTP_REFERER}}"></a>
-                        <button onclick="document.getElementById('goBack').click()" class="alert alert-success">Go Back</button>
-                        <input type="submit" value="Confirm" class="alert alert-danger">
+                        
+                        <!--<button onclick="document.getElementById('goBack').click()" >Go Back</button> -->
+                        
+                        <a id="goBack" href="{{request.META.HTTP_REFERER}}"><input type="button" value="Back" class="alert alert-success"/></a>                       
+                        <input type="submit" value="Delete" class="alert alert-danger">
                     </div>
                 </form>  
             </div>
