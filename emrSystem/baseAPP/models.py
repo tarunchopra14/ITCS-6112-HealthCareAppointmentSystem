@@ -5,10 +5,8 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
-import re
 from django.db import models
 from django.core.exceptions import ValidationError
-from django import forms
 
 
 class AuthGroup(models.Model):
@@ -330,7 +328,6 @@ class PatientInformation(models.Model):
     class Meta:
         managed = False
         db_table = 'patient_information'
-
 
 
 class PrescribeMedicine(models.Model):

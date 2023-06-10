@@ -1,7 +1,9 @@
 {% extends 'main.html' %}
 
 {% block content %}
-<a href="{% url 'register-patient' %}">Register Patient</a>
+
+
+
 <hr>
 <h1>Patients Information</h1>
 <div>
@@ -39,9 +41,12 @@
         <td>{{patient.11}}</td>
         <td>{{patient.12}}</td>
         <td>{{patient.13}}</td>
-        <td><a href="{% url 'update-patient' patient.0 %}">Edit</a> 
+        <td><div><a href="{% url 'update-patient' patient.0 %}">Edit</a> </div>
             <span>|</span> 
-            <a href="{% url 'delete-patient' patient.0 %}">Delete</a>
+            <div><a href="{% url 'delete-patient' patient.0 %}">Delete</a></div>
+            <span>|</span>
+            <div><a href="{% url 'check_in_patient' %}">Check-In Information</a> </div>           
+            
     </tr>
     {% endfor %}
   </table>
