@@ -301,11 +301,12 @@ GENDER_CHOICES= [
 
 # Dropdown options for race
 RACE_CHOICES= [
-    ('American Indian or Alaska Native', 'American Indian or Alaska Native'),
+    ('American Indian', 'American Indian'),
+    ('Alaska Native', 'Alaska Native'),
     ('Asian', 'Asian'),
-    ('Black or African American', 'Black or African American'),
-    ('Native Hawaiian or Other Pacific Islander', 'Native Hawaiian or Other Pacific Islander'),
-    ('White or Caucasian', 'White or Caucasian'),
+    ('Black', 'Black'),
+    ('Pacific Islander', 'Pacific Islander'),
+    ('White/Caucasian', 'White/Caucasian'),
     ('Two or More Races', 'Two or More Races'),
     ('Prefer not to say', 'Prefer not to say'),
     ]
