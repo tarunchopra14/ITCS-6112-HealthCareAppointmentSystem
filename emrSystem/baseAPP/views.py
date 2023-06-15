@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.db import connection
 from .forms import PatientInformationForm
+from .forms import CheckInformationForm
+from .forms import ProviderInformationForm
 from .models import PatientInformation
 
 # Create your views here.
@@ -63,3 +65,48 @@ def add_patient(data):
     preferred_language = str(data['preferred_language'])
     cursor = connection.cursor()
     cursor.callproc('sp_insert_patient_information', [first_name, last_name, gender, date_of_birth, age, race, phone, address, zip_code, email, maratial_status, snn, preferred_language])
+
+def checkinPatient(request):
+    form = CheckInformationForm()
+    if request.method == 'POST':
+        #if form.is_valid():
+            check_in_patient(request.POST)
+            return redirect('emrSystem')
+    context = {'form' : form}
+    return render(request, 'check_in_form.html', context)
+
+
+def check_in_patient(data):
+    patient_weight = int(data['patient_weight']) ##int
+    visit_type = int(data['visit_type'])
+    patient_weight = float(data['patient_weight'])
+    date = str(data['date'])
+    from_time = str(data['from_time'])
+    to_time = str(data['to_time'])
+    status = str(data['status'])
+    new_patient = bool(data['new_patient'])
+    walk_in = bool(data['walk_in'])
+    cursor = connection.cursor()
+    cursor.callproc('sp_insert_check_in_information', [patient_weight, visit_type, patient_weight, date, from_time, to_time, status, new_patient, walk_in])
+
+def addProvider(request):
+    form = ProviderInformationForm()
+    if request.method == 'POST':
+        if form.is_valid:
+            add_provider_information(request.POST)
+            return redirect('emrSystem')
+    context = {'form' : form}
+    return render(request, 'provider_form.html', context)
+
+def add_provider_information(data):
+    first_name = str(data['first_name'])
+    last_name = str(data['last_name'])
+    specialty = str(data['specialty'])
+    from_time = str(data['from_time'])  #TODO: check
+    to_time = str(data['to_time'])  #TODO: check
+    available = str(data['available']) 
+    address = str(data['address'])
+    zip_code = str(data['zip_code'])
+    phone = str(data['phone'])
+    cursor = connection.cursor()
+    cursor.callproc('sp_insert_provider_information', [first_name, last_name, specialty, from_time, to_time, available, address, zip_code, phone])
