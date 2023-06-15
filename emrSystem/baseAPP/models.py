@@ -87,16 +87,46 @@ class Bill(models.Model):
         db_table = 'bill'
 
 
+# Limit weight to be within 0-1399
+def weightValidation(val):
+    if re.match('^(0|([1-9])|([1-9][0-9])|([1-9][0-9][0-9]|[1][0-3][0-9][0-9]))?$', str(val)) == None:
+        raise ValidationError("Only numbers 0-1399 allowed")
+
+
+# Checks for YYYY-MM-DD or YYYY/MM/DD format and that year is in range 2020-2099, month is in range 1-12, and day is in range 1-31
+def checkInDateValidation(val):
+    if re.match('^(2[0][2-9][0-9])\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$', str(val)) == None:
+        raise ValidationError("Date of Birth is in wrong format or incorrect")
+
+
+# Checks for time provided to be in formats HHMM or HH:MM in military time
+def checkInTimeValidation(val):
+    if re.match('^([01]\d|2[0-3]):?([0-5]\d)$', str(val)) == None:
+        raise ValidationError("Enter in military time. Ex: 14:00 for 2 P.M.")
+
+
+STATUS_CHOICES= [
+    ('Checked In', 'Checked In'),
+    ('Scheduled Appointment', 'Scheduled Appointment'),
+    ('Canceled', 'Canceled'),
+    ('Complete', 'Complete'),
+    ]
+
+NEW_PATIENT_AND_WALK_IN_CHOICES= [
+    (1, 'Yes'),
+    (0, 'No'),
+    ]
+
 class CheckInInformation(models.Model):
     clinic_department = models.ForeignKey('ClinicDepartment', models.DO_NOTHING, blank=True, null=True)
     visit_type = models.ForeignKey('VisitType', models.DO_NOTHING, db_column='visit_type', blank=True, null=True)
-    patient_weight = models.FloatField()
-    date = models.DateField()
-    from_time = models.TimeField()
-    to_time = models.TimeField()
-    status = models.CharField(max_length=50)
-    new_patient = models.IntegerField()
-    walk_in = models.IntegerField()
+    patient_weight = models.FloatField(validators=[weightValidation], help_text="(enter weight in pounds)")
+    date = models.DateField(validators=[checkInDateValidation], help_text="(use format: YYYY-MM-DD or YYYY/MM/DD)")
+    from_time = models.TimeField(validators=[checkInTimeValidation], help_text="(enter in military time)")
+    to_time = models.TimeField(validators=[checkInTimeValidation], help_text="(enter in military time)")
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES)
+    new_patient = models.IntegerField(choices=NEW_PATIENT_AND_WALK_IN_CHOICES)
+    walk_in = models.IntegerField(choices=NEW_PATIENT_AND_WALK_IN_CHOICES)
 
     class Meta:
         managed = False
