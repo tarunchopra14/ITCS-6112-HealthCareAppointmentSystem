@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.db import connection
-from .forms import PatientInformationForm
+from .forms import PatientInformationForm, ProviderInformationForm
 from .forms import CheckInformationForm
-from .models import PatientInformation
+from .models import PatientInformation, ProviderInformation
 
 
 # Create your views here.
@@ -89,3 +89,33 @@ def check_in_patient(data):
     walk_in = bool(data['walk_in'])
     cursor = connection.cursor()
     cursor.callproc('sp_insert_check_in_information', [patient_weight, visit_type, patient_weight, date, from_time, to_time, status, new_patient, walk_in])
+
+def addProvider(request):
+    form = ProviderInformationForm()
+    if request.method == 'POST':
+        if form.is_valid:
+            addProviderInformation(request.POST)
+            return redirect('emrSystem')
+    context = {'form' : form}
+    return render(request, 'provider_form.html', context)
+
+def addProviderInformation(data):
+    first_name = str(data['first_name'])
+    last_name = str(data['last_name'])
+    specialty = str(data['specialty'])
+    from_time = str(data['from_time'])  #TODO: check
+    to_time = str(data['to_time'])  #TODO: check
+    available = str(data['available']) 
+    address = str(data['address'])
+    zip_code = str(data['zip_code'])
+    phone = str(data['phone'])
+    cursor = connection.cursor()
+    cursor.callproc('sp_insert_provider_information', [first_name, last_name, specialty, from_time, to_time, available, address, zip_code, phone])
+
+def getProvider(request):
+    cursor = connection.cursor()
+    cursor.execute('call sp_get_provider_information()')
+    providers = cursor.fetchall()
+    cursor.close()
+    context = {'providers' : providers}
+    return render(request, 'provider.html', context)

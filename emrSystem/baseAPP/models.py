@@ -386,15 +386,15 @@ class Prescription(models.Model):
 
 
 class ProviderInformation(models.Model):
-    first_name = models.CharField(max_length=20)
-    last_name = models.CharField(max_length=20)
-    specialty = models.CharField(max_length=20)
-    from_time = models.TimeField()
-    to_time = models.TimeField()
-    available = models.CharField(max_length=10)
+    first_name = models.CharField('* First Name', max_length=20, validators=[nameValidation])
+    last_name = models.CharField('* Last Name', max_length=20, validators=[nameValidation])
+    specialty = models.CharField('* Specialty', max_length=20, validators=[nameValidation])
+    from_time = models.TimeField('* From Time', help_text= '(use format: HH:MM:SS)')
+    to_time = models.TimeField('* To Time', help_text= '(use format: HH:MM:SS)')
+    available = models.CharField('* Availability', max_length=10, help_text= '(use format: Day-Day)')
     address = models.CharField(max_length=30, blank=True, null=True)
-    zip_code = models.ForeignKey('ZipCode', models.DO_NOTHING, db_column='zip_code', blank=True, null=True)
-    phone = models.CharField(max_length=20)
+    zip_code = models.ForeignKey('ZipCode', models.DO_NOTHING, db_column='zip_code', verbose_name= 'ZIP Code', blank=True, null=True)
+    phone = models.CharField('* Phone', max_length=20, validators=[phoneValidation], help_text= '(use format: XXX-XXX-XXXX)')
 
     class Meta:
         managed = False
