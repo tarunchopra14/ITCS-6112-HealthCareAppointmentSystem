@@ -1,4 +1,4 @@
-DROP database emrsystem;
+DROP database IF EXISTS emrsystem;
 CREATE DATABASE IF NOT EXISTS emrsystem;
 use emrsystem;
 

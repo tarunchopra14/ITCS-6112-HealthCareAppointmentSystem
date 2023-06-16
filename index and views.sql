@@ -1,8 +1,5 @@
 use emrsystem;
 
-CREATE INDEX idx_patient_information
-ON patient_information (first_name, last_name, gender, age);
-
 DROP PROCEDURE IF EXISTS sp_get_patient_information;
 DELIMITER $$
 CREATE PROCEDURE sp_get_patient_information()
@@ -11,10 +8,7 @@ BEGIN
 END
 $$
 
-call sp_get_patient_information;
-
-
-DROP VIEW all_visits_view; 
+DROP VIEW IF EXISTS all_visits_view; 
 CREATE OR REPLACE VIEW all_visits_view AS
     SELECT
 		patient_information.id,
@@ -51,22 +45,11 @@ BEGIN
 END
 $$
 
-call sp_get_all_visits_view;
-
--- Trigger
-CREATE TABLE patient_tract (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-    patien_id INT NOT NULL,
-    update_on VARCHAR(50) NOT NULL,
-    action VARCHAR(50) DEFAULT NULL
-);
-
-CREATE TRIGGER before_patient_update 
-    BEFORE UPDATE ON patient_information
-    FOR EACH ROW 
- INSERT INTO patient_tract
- SET action = 'update',
-     patien_id = OLD.id,
-     update_on = NOW();
-     
+DROP PROCEDURE IF EXISTS sp_get_provider_information;
+DELIMITER $$
+CREATE PROCEDURE sp_get_provider_information()
+BEGIN
+	SELECT * FROM provider_information;
+END
+$$
     

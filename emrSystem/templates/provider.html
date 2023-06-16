@@ -1,0 +1,46 @@
+{% extends 'main.html' %}
+{% block content %}
+<hr>
+<h1>Provider Information</h1>
+<div>
+    <table style="width:100%" class="table-fit">
+        <thead class="thead-dark">
+            <tr>
+              <th scope="col">First Name</th>
+              <th scope="col">Last Name</th>
+              <th scope="col">Specialty</th>
+              <th scope="col">From time</th>
+              <th scope="col">To time</th>
+              <th scope="col">Availability</th>
+              <th scope="col">Address</th>
+              <th scope="col">Zip</th>
+              <th scope="col">Phone</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+        {% for provider in providers %}
+        
+            <tr>
+                <td>{{provider.1}}</td>
+                <td>{{provider.2}}</td>
+                <td>{{provider.3}}</td>
+                <td>{{provider.4}}</td>
+                <td>{{provider.5}}</td>
+                <td>{{provider.6}}</td>
+                <td>{{provider.7}}</td>
+                <td>{{provider.8}}</td>
+                <td>{{provider.9}}</td>
+                <td>
+                    <a href="#" class="view" title="View" data-toggle="tooltip"><i class="material-icons">&#xE417;</i></a>
+                    <a href="#" class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
+                    <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                </td>
+            </tr>
+        
+        
+        {% endfor %}
+    </tbody>
+    </table>    
+</div>
+{% endblock content %}
