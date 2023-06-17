@@ -89,7 +89,7 @@ class Bill(models.Model):
 
 # Limit weight to be within 0-1399
 def weightValidation(val):
-    if re.match('^(0|([1-9])|([1-9][0-9])|([1-9][0-9][0-9]|[1][0-3][0-9][0-9]))?$', str(val)) == None:
+    if val < 0 or val > 1399:
         raise ValidationError("Only numbers 0-1399 allowed")
 
 
@@ -101,7 +101,7 @@ def checkInDateValidation(val):
 
 # Checks for time provided to be in formats HHMM or HH:MM in military time
 def checkInTimeValidation(val):
-    if re.match('^([01]\d|2[0-3]):?([0-5]\d)$', str(val)) == None:
+    if re.match('^([01]\d|2[0-3]):?([0-5]\d)$', str(val)):
         raise ValidationError("Enter in military time. Ex: 14:00 for 2 P.M.")
 
 
@@ -266,11 +266,11 @@ class PatientEmergencyContactInformation(models.Model):
 # Check if numbers or symbols are used
 def nameValidation(val):
     if re.match('([^A-Za-zÀ-ȕ ]+)', str(val)):
-        raise ValidationError("Only letters allowed in names")
+        raise ValidationError("Only letters allowed")
 
 # Limit age to be within 0-125
 def ageValidation(val):
-    if re.match('^(0?[0-9]|[1-9][0-9]|[1][0-2][0-5])$', str(val)) == None:
+    if val < 0 or val > 125:
         raise ValidationError("Only ages 0-125 allowed")
 
 # Checks for XXX-XXX-XXXX format and that digits are used
