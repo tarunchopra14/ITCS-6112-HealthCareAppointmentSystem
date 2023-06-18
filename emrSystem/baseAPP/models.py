@@ -89,7 +89,7 @@ class Bill(models.Model):
 
 # Limit weight to be within 0-1399
 def weightValidation(val):
-    if re.match('^(0|([1-9])|([1-9][0-9])|([1-9][0-9][0-9]|[1][0-3][0-9][0-9]))?$', str(val)) == None:
+    if val < 0 or val > 1399:
         raise ValidationError("Only numbers 0-1399 allowed")
 
 
@@ -101,7 +101,7 @@ def checkInDateValidation(val):
 
 # Checks for time provided to be in formats HHMM or HH:MM in military time
 def checkInTimeValidation(val):
-    if re.match('^([01]\d|2[0-3]):?([0-5]\d)$', str(val)) == None:
+    if re.match('^([01]\d|2[0-3]):?([0-5]\d)$', str(val)):
         raise ValidationError("Enter in military time. Ex: 14:00 for 2 P.M.")
 
 
@@ -118,15 +118,15 @@ NEW_PATIENT_AND_WALK_IN_CHOICES= [
     ]
 
 class CheckInInformation(models.Model):
-    clinic_department = models.ForeignKey('ClinicDepartment', models.DO_NOTHING, blank=True, null=True)
-    visit_type = models.ForeignKey('VisitType', models.DO_NOTHING, db_column='visit_type', blank=True, null=True)
-    patient_weight = models.FloatField(validators=[weightValidation], help_text="(enter weight in pounds)")
-    date = models.DateField(validators=[checkInDateValidation], help_text="(use format: YYYY-MM-DD or YYYY/MM/DD)")
-    from_time = models.TimeField(validators=[checkInTimeValidation], help_text="(enter in military time)")
-    to_time = models.TimeField(validators=[checkInTimeValidation], help_text="(enter in military time)")
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES)
-    new_patient = models.IntegerField(choices=NEW_PATIENT_AND_WALK_IN_CHOICES)
-    walk_in = models.IntegerField(choices=NEW_PATIENT_AND_WALK_IN_CHOICES)
+    clinic_department = models.ForeignKey('ClinicDepartment', models.DO_NOTHING, verbose_name= 'Clinic Department', blank=True, null=True)
+    visit_type = models.ForeignKey('VisitType', models.DO_NOTHING, db_column='visit_type', verbose_name= 'Visit Type', blank=True, null=True)
+    patient_weight = models.FloatField('* Patient Weight', validators=[weightValidation], help_text="(enter weight in pounds)")
+    date = models.DateField('* Date', validators=[checkInDateValidation], help_text="(use format: YYYY-MM-DD or YYYY/MM/DD)")
+    from_time = models.TimeField('* From Time', validators=[checkInTimeValidation], help_text="(enter in military time - HH:MM)")
+    to_time = models.TimeField('* To Time', validators=[checkInTimeValidation], help_text="(enter in military time - HH:MM)")
+    status = models.CharField('* Status', max_length=50, choices=STATUS_CHOICES)
+    new_patient = models.IntegerField('* New Patient', choices=NEW_PATIENT_AND_WALK_IN_CHOICES)
+    walk_in = models.IntegerField('* Walk In', choices=NEW_PATIENT_AND_WALK_IN_CHOICES)
 
     class Meta:
         managed = False
@@ -266,11 +266,11 @@ class PatientEmergencyContactInformation(models.Model):
 # Check if numbers or symbols are used
 def nameValidation(val):
     if re.match('([^A-Za-zÀ-ȕ ]+)', str(val)):
-        raise ValidationError("Only letters allowed in names")
+        raise ValidationError("Only letters allowed")
 
 # Limit age to be within 0-125
 def ageValidation(val):
-    if re.match('^(0?[0-9]|[1-9][0-9]|[1][0-2][0-5])$', str(val)) == None:
+    if val < 0 or val > 125:
         raise ValidationError("Only ages 0-125 allowed")
 
 # Checks for XXX-XXX-XXXX format and that digits are used
@@ -384,15 +384,20 @@ class Prescription(models.Model):
         managed = False
         db_table = 'prescription'
 
+# Check if availability is in correct day-day format (exs: mon-sat, thu-fri, sun-tue)
+def availabilityValidation(val):
+    if re.match('^(mon|tue|wed|thu|fri|sat|sun)\-(mon|tue|wed|thu|fri|sat|sun)$', str(val)) == None:
+        raise ValidationError("Incorrect format. Examples: mon-sat, thu-fri, sun-tue")
+
 
 class ProviderInformation(models.Model):
     first_name = models.CharField('* First Name', max_length=20, validators=[nameValidation])
     last_name = models.CharField('* Last Name', max_length=20, validators=[nameValidation])
     specialty = models.CharField('* Specialty', max_length=20, validators=[nameValidation])
-    from_time = models.TimeField('* From Time', help_text= '(use format: HH:MM:SS)')
-    to_time = models.TimeField('* To Time', help_text= '(use format: HH:MM:SS)')
-    available = models.CharField('* Availability', max_length=10, help_text= '(use format: Day-Day)')
-    address = models.CharField(max_length=30, blank=True, null=True)
+    from_time = models.TimeField('* From Time', validators= [checkInTimeValidation], help_text= '(enter in military time - HH:MM)')
+    to_time = models.TimeField('* To Time', validators=[checkInTimeValidation], help_text= '(enter in military time - HH:MM)')
+    available = models.CharField('* Availability', validators=[availabilityValidation], max_length=10, help_text= '(use format: day-day, only first three letters of day of the week in lowercase)')
+    address = models.CharField(max_length=30, validators=[addressValidation], blank=True)
     zip_code = models.ForeignKey('ZipCode', models.DO_NOTHING, db_column='zip_code', verbose_name= 'ZIP Code', blank=True, null=True)
     phone = models.CharField('* Phone', max_length=20, validators=[phoneValidation], help_text= '(use format: XXX-XXX-XXXX)')
 
