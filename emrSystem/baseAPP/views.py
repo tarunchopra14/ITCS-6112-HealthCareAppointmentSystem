@@ -20,7 +20,8 @@ def home(request):
 def registerPatient(request):
     form = PatientInformationForm()
     if request.method == 'POST':
-        if form.is_valid:
+        form = PatientInformationForm(request.POST)
+        if form.is_valid():
             add_patient(request.POST)
             return redirect('emrSystem')
     context = {'form' : form}
@@ -70,7 +71,8 @@ def add_patient(data):
 def checkinPatient(request):
     form = CheckInformationForm()
     if request.method == 'POST':
-        #if form.is_valid():
+        form = CheckInformationForm(request.POST)
+        if form.is_valid():
             check_in_patient(request.POST)
             return redirect('emrSystem')
     context = {'form' : form}
@@ -78,7 +80,7 @@ def checkinPatient(request):
 
 
 def check_in_patient(data):
-    patient_weight = int(data['patient_weight']) ##int
+    clinic_department = int(data['clinic_department']) ##int
     visit_type = int(data['visit_type'])
     patient_weight = float(data['patient_weight'])
     date = str(data['date'])
@@ -88,12 +90,13 @@ def check_in_patient(data):
     new_patient = bool(data['new_patient'])
     walk_in = bool(data['walk_in'])
     cursor = connection.cursor()
-    cursor.callproc('sp_insert_check_in_information', [patient_weight, visit_type, patient_weight, date, from_time, to_time, status, new_patient, walk_in])
+    cursor.callproc('sp_insert_check_in_information', [clinic_department, visit_type, patient_weight, date, from_time, to_time, status, new_patient, walk_in])
 
 def addProvider(request):
     form = ProviderInformationForm()
     if request.method == 'POST':
-        if form.is_valid:
+        form = ProviderInformationForm(request.POST)
+        if form.is_valid():
             addProviderInformation(request.POST)
             return redirect('emrSystem')
     context = {'form' : form}
