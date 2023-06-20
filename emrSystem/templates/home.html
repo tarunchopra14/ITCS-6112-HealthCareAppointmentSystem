@@ -2,11 +2,9 @@
 
 {% block content %}
 
-
-
 <hr>
 <h1>Patients Information</h1>
-<div>
+<div class="col">
 <table style="width:100%" class="table-fit">
     <thead class="thead-dark">
         <tr>
@@ -45,22 +43,20 @@
             <td>{{patient.11}}</td>
             <td>{{patient.12}}</td>
             <td>{{patient.13}}</td>
-            <td>
-                <a href="{% url 'check_in_patient' %}" class="view" title="View" data-toggle="tooltip"><i class="material-icons">&#xE417;</i></a>
-                <a href="{% url 'update-patient' patient.0 %}" class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
-                <a href="{% url 'delete-patient' patient.0 %}" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+            <td>                
+                <a href="{% url 'check_in_patient' %}" class="view" title="Click here to add check-in information" data-toggle="tooltip"><i class="fas fa-plus" style="color: #24a0ed;"></i></a>&nbsp;
+                <a href="{% url 'update-patient' patient.0 %}" class="edit" title="Click here to edit" data-toggle="tooltip"><i class="fas fa-edit" style="color: green;"></i></a>&nbsp;
+                <a href="{% url 'delete-patient' patient.0 %}" class="delete" title="Click here to delete" data-toggle="tooltip"><i class="fas fa-trash-alt" style="color: red;"></i></a>&nbsp;                
             </td>
-        </tr>
-    
-    
+        </tr>        
     {% endfor %}
 </tbody>
 </table>
-  
-
 </div>
+<br>
+<hr>
 <h1>List of all visits to the clinic</h1>
-<div>
+<div class="col">
 <table style="width:100%" class="table-fit">
     <thead class="thead-dark">
         <tr>

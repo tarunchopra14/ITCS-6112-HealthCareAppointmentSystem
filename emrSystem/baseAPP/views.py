@@ -98,7 +98,7 @@ def addProvider(request):
         form = ProviderInformationForm(request.POST)
         if form.is_valid():
             addProviderInformation(request.POST)
-            return redirect('emrSystem')
+            return redirect('/get-provider/')
     context = {'form' : form}
     return render(request, 'provider_form.html', context)
 
@@ -122,3 +122,21 @@ def getProvider(request):
     cursor.close()
     context = {'providers' : providers}
     return render(request, 'provider.html', context)
+
+def updateProvider(request, pk):
+    provider = ProviderInformation.objects.get(id=pk)
+    form = ProviderInformationForm(instance=provider)
+    if request.method == 'POST':
+        form = ProviderInformationForm(request.POST, instance=provider)
+        if form.is_valid():
+            form.save()
+            return redirect('/get-provider/')
+    context = {'form': form}
+    return render(request, 'provider_form.html', context)
+
+def deleteProvider(request, pk):
+    provider = ProviderInformation.objects.get(id=pk)
+    if request.method == 'POST':
+        provider.delete()
+        return redirect('/get-provider/')
+    return render(request, 'delete_provider.html', {'obj': provider})

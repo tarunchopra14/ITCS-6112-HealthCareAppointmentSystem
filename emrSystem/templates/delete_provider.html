@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="card text-white bg-danger mb-3" style="max-width: 18rem;">
+        <div class="card-header">Delete Entry</div>
+        <div class="card-body">
+            <h5 class="card-title">Are you sure you want to delete provider information?</h5>
+            <p class="card-text">Only delete provider entries if you have gotten permission to do so.</p>
+            <form method="POST" action="" class="text-center">
+                {% csrf_token %}
+                <div class="form-group">
+                    <a id="goBack" href="{{request.META.HTTP_REFERER}}"><input type="button" value="Back"
+                            class="alert alert-success" /></a>
+                    <input type="submit" value="Delete" class="alert alert-danger">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

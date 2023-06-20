@@ -120,13 +120,13 @@ NEW_PATIENT_AND_WALK_IN_CHOICES= [
 class CheckInInformation(models.Model):
     clinic_department = models.ForeignKey('ClinicDepartment', models.DO_NOTHING, verbose_name= 'Clinic Department', blank=True, null=True)
     visit_type = models.ForeignKey('VisitType', models.DO_NOTHING, db_column='visit_type', verbose_name= 'Visit Type', blank=True, null=True)
-    patient_weight = models.FloatField('* Patient Weight', validators=[weightValidation], help_text="(enter weight in pounds)")
-    date = models.DateField('* Date', validators=[checkInDateValidation], help_text="(use format: YYYY-MM-DD or YYYY/MM/DD)")
-    from_time = models.TimeField('* From Time', validators=[checkInTimeValidation], help_text="(enter in military time - HH:MM)")
-    to_time = models.TimeField('* To Time', validators=[checkInTimeValidation], help_text="(enter in military time - HH:MM)")
-    status = models.CharField('* Status', max_length=50, choices=STATUS_CHOICES)
-    new_patient = models.IntegerField('* New Patient', choices=NEW_PATIENT_AND_WALK_IN_CHOICES)
-    walk_in = models.IntegerField('* Walk In', choices=NEW_PATIENT_AND_WALK_IN_CHOICES)
+    patient_weight = models.FloatField('Patient Weight', validators=[weightValidation], help_text="(enter weight in pounds)")
+    date = models.DateField('Date', validators=[checkInDateValidation], help_text="(use format: YYYY-MM-DD or YYYY/MM/DD)")
+    from_time = models.TimeField('From Time', validators=[checkInTimeValidation], help_text="(enter in military time - HH:MM)")
+    to_time = models.TimeField('To Time', validators=[checkInTimeValidation], help_text="(enter in military time - HH:MM)")
+    status = models.CharField('Status', max_length=50, choices=STATUS_CHOICES)
+    new_patient = models.IntegerField('New Patient', choices=NEW_PATIENT_AND_WALK_IN_CHOICES)
+    walk_in = models.IntegerField('Walk In', choices=NEW_PATIENT_AND_WALK_IN_CHOICES)
 
     class Meta:
         managed = False
@@ -259,10 +259,6 @@ class PatientEmergencyContactInformation(models.Model):
         db_table = 'patient_emergency_contact_information'
 
 
-
-
-
-
 # Check if numbers or symbols are used
 def nameValidation(val):
     if re.match('([^A-Za-zÀ-ȕ ]+)', str(val)):
@@ -297,11 +293,11 @@ def addressValidation(val):
 
 # Dropdown options for marital status
 MARITAL_STATUS_CHOICES= [
-    ('Married', 'Married'),
-    ('Divorced', 'Divorced'),
-    ('Separated', 'Separated'),
-    ('Widowed', 'Widowed'),
-    ('Never married', 'Never married'),
+    ('1', 'Married'),
+    ('0', 'Divorced'),
+    ('0', 'Separated'),
+    ('0', 'Widowed'),
+    ('0', 'Never married'),
     ]
 
 # Dropdown options for preferred language
@@ -326,7 +322,7 @@ GENDER_CHOICES= [
     ('Male', 'Male'),
     ('Female', 'Female'),
     ('Other', 'Other'),
-    ('Prefer not to say', 'Prefer not to say'),
+    ('PNTS', 'Prefer not to say'),
     ]
 
 # Dropdown options for race
@@ -342,16 +338,16 @@ RACE_CHOICES= [
     ]
 
 class PatientInformation(models.Model):
-    first_name = models.CharField('* First Name', max_length=20, validators=[nameValidation])
-    last_name = models.CharField('* Last Name', max_length=20, validators=[nameValidation])
-    gender = models.CharField('* Gender', max_length=20, choices=GENDER_CHOICES)
-    date_of_birth = models.DateField('* Date of Birth', help_text= '(use format: YYYY-MM-DD or YYYY/MM/DD)', validators=[dobValidation])
-    age = models.IntegerField('* Age', validators=[ageValidation])
-    race = models.CharField('* Race', max_length=50, choices=RACE_CHOICES)
-    phone = models.CharField('* Phone', max_length=20, validators=[phoneValidation], help_text= '(use format: XXX-XXX-XXXX)')
+    first_name = models.CharField('First Name', max_length=20, validators=[nameValidation])
+    last_name = models.CharField('Last Name', max_length=20, validators=[nameValidation])
+    gender = models.CharField('Gender', max_length=20, choices=GENDER_CHOICES)
+    date_of_birth = models.DateField('Date of Birth', help_text= '(use format: YYYY-MM-DD or YYYY/MM/DD)', validators=[dobValidation])
+    age = models.IntegerField('Age', validators=[ageValidation])
+    race = models.CharField('Race', max_length=50, choices=RACE_CHOICES)
+    phone = models.CharField('Phone', max_length=20, validators=[phoneValidation], help_text= '(use format: XXX-XXX-XXXX)')
     address = models.CharField('Address', max_length=30, validators=[addressValidation], blank=True)
     zip_code = models.ForeignKey('ZipCode', models.DO_NOTHING, db_column='zip_code', verbose_name= 'ZIP Code', blank=True, null=True)
-    email = models.EmailField('* Email', max_length=40)
+    email = models.EmailField('Email', max_length=40)
     maratial_status = models.CharField('Marital Status', max_length=15, choices=MARITAL_STATUS_CHOICES, blank=True, null=True)
     snn = models.CharField('SSN', max_length=20, validators=[ssnValidation], blank=True, null=True, help_text= '(use format: XXX-XX-XXXX)')
     preferred_language = models.CharField('Preferred Language', max_length=20, choices=LANGUAGE_CHOICES, blank=True, null=True)
@@ -391,15 +387,15 @@ def availabilityValidation(val):
 
 
 class ProviderInformation(models.Model):
-    first_name = models.CharField('* First Name', max_length=20, validators=[nameValidation])
-    last_name = models.CharField('* Last Name', max_length=20, validators=[nameValidation])
-    specialty = models.CharField('* Specialty', max_length=20, validators=[nameValidation])
-    from_time = models.TimeField('* From Time', validators= [checkInTimeValidation], help_text= '(enter in military time - HH:MM)')
-    to_time = models.TimeField('* To Time', validators=[checkInTimeValidation], help_text= '(enter in military time - HH:MM)')
-    available = models.CharField('* Availability', validators=[availabilityValidation], max_length=10, help_text= '(use format: day-day, only first three letters of day of the week in lowercase)')
+    first_name = models.CharField('First Name', max_length=20, validators=[nameValidation])
+    last_name = models.CharField('Last Name', max_length=20, validators=[nameValidation])
+    specialty = models.CharField('Specialty', max_length=20, validators=[nameValidation])
+    from_time = models.TimeField('From Time', validators= [checkInTimeValidation], help_text= '(enter in military time - HH:MM)')
+    to_time = models.TimeField('To Time', validators=[checkInTimeValidation], help_text= '(enter in military time - HH:MM)')
+    available = models.CharField('Availability', validators=[availabilityValidation], max_length=10, help_text= '(use format: day-day, only first three letters of day of the week in lowercase)')
     address = models.CharField(max_length=30, validators=[addressValidation], blank=True)
     zip_code = models.ForeignKey('ZipCode', models.DO_NOTHING, db_column='zip_code', verbose_name= 'ZIP Code', blank=True, null=True)
-    phone = models.CharField('* Phone', max_length=20, validators=[phoneValidation], help_text= '(use format: XXX-XXX-XXXX)')
+    phone = models.CharField('Phone', max_length=20, validators=[phoneValidation], help_text= '(use format: XXX-XXX-XXXX)')
 
     class Meta:
         managed = False

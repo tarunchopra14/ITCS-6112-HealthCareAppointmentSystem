@@ -1,119 +1,57 @@
 {% extends 'main.html' %}
-
+{% load crispy_forms_tags %}
 {% block content %}
-<div class="container">
-  <div class="form-group">
-
-  
-      <!--Check in patient page-->
-    <form method="POST" action="">
-      <input type="hidden" name="csrfmiddlewaretoken" value="Z3970lcGqE6A2MTs9nX763AAnvjgC6kaeGNz1nzMgvfRQ4TF1VopvyjhxpHpqnkp">
-
-      <label for="id_clinic_department">Clinic department:</label>
-            <select class="form-select" name="clinic_department" id="id_clinic_department">
-              <option value="" selected>---------</option>
-
-              <option value="1">ClinicDepartment object (1)</option>
-          
-              <option value="2">ClinicDepartment object (2)</option>
-          
-              <option value="3">ClinicDepartment object (3)</option>
-          
-              <option value="4">ClinicDepartment object (4)</option>
-          
-              <option value="5">ClinicDepartment object (5)</option>
-          
-              <option value="6">ClinicDepartment object (6)</option>
-          
-              <option value="7">ClinicDepartment object (7)</option>
-            </select>
-
-    
-      <label for="id_visit_type">Visit type:</label>
-      <select name="visit_type" id="id_visit_type" class="form-select">
-        <option value="" selected>---------</option>
-
-        <option value="1">VisitType object (1)</option>
-
-        <option value="2">VisitType object (2)</option>
-
-        <option value="3">VisitType object (3)</option>
-
-        <option value="4">VisitType object (4)</option>
-
-        <option value="5">VisitType object (5)</option>
-
-        <option value="6">VisitType object (6)</option>
-
-        <option value="7">VisitType object (7)</option>
-
-        <option value="8">VisitType object (8)</option>
-      </select>
-
-      <div class="form-group">
-        <label for="id_patient_weight">Patient weight:</label>
-        <input type="number" name="patient_weight" step="any" required id="id_patient_weight" class="form-control" placeholder="Enter weight in pounds">
+<div>
+  <form method="POST" action="">
+    {% csrf_token %}
+    <!-- {{ form|crispy }} without style-->
+    <div class="form-group col">
+      <div class="form-row col">
+        <div class="form-group col-md-6">
+          {{ form.clinic_department|as_crispy_field }}
+        </div>
+      <div class="form-group col-md-6">
+          {{ form.visit_type|as_crispy_field }}
+        </div>
       </div>
-
-
-      <div class="form-group">
-        <label for="id_date">Date:</label>
-        <input type="text" name="date" required id="id_date" class="form-control" placeholder="Use format: YYYY-MM-DD or YYYY/MM/DD">
+      <div class="form-row col">
+        <div class="form-group col-md-6">
+          {{ form.patient_weight|as_crispy_field }}
+        </div>
+        <div class="form-group col-md-6">
+          {{ form.date|as_crispy_field }}
+        </div>
       </div>
-      
-      <div class="form-group">
-        <label for="id_from_time">From time:</label>
-        <input type="text" name="from_time" required id="id_from_time" class="form-control" placeholder="Enter in military time">
+      <div class="form-row col">
+        <div class="form-group col-md-6">
+          {{ form.from_time|as_crispy_field }}
+        </div>
+        <div class="form-group col-md-6">
+          {{ form.to_time|as_crispy_field }}
+        </div>
       </div>
-
-      <div class="form-group">
-        <label for="id_to_time">To time:</label>
-        <input type="text" name="to_time" required id="id_to_time" class="form-control" placeholder="Enter in military time">
+      <div class="form-row col">        
+        <div class="form-group col-md-6">
+          {{ form.status|as_crispy_field }} 
+        </div>
+        <div class="form-group col-md-6">
+          {{ form.new_patient|as_crispy_field }}
+        </div>
       </div>
-
-      <label for="id_status">Status:</label>
-      <select name="status" required id="id_status" class="form-select">
-        <option value="" selected>---------</option>
-
-        <option value="Checked In">Checked In</option>
-
-        <option value="Scheduled Appointment">Scheduled Appointment</option>
-
-        <option value="Canceled">Canceled</option>
-
-        <option value="Complete">Complete</option>
-
-      </select>
-      
-      
-
-
-    
-
-      <label for="id_new_patient">New patient:</label>
-      <select name="new_patient" required id="id_new_patient" class="form-select">
-        <option value="" selected>---------</option>
-
-        <option value="1">Yes</option>
-
-        <option value="0">No</option>
-      </select>
-      
-    
-      <label for="id_walk_in">Walk in:</label>
-      <select name="walk_in" required id="id_walk_in" class="form-select">
-        <option value="" selected>---------</option>
-
-        <option value="1">Yes</option>
-
-        <option value="0">No</option>
-      </select>
-          
-    </form>
-
-    <div class="text-center .mt-2">
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </div>
-  </div>
+      <div class="form-row col">        
+          <div class="form-group col-md-6">
+            {{ form.walk_in|as_crispy_field }} 
+          </div>
+        </div>      
+      <div class="row justify-content-center">
+        <div class="col-md-4">
+          <input type="submit" value="Submit" class="btn btn-outline-primary btn-lg btn-block">
+        </div>
+        <div class="col-md-4">
+          <a href="{{request.META.HTTP_REFERER}}"><input type="button" value="Cancle"
+              class="btn btn-outline-secondary btn-lg btn-block" /></a>
+        </div>
+      </div>
+  </form>
 </div>
 {% endblock content %}
