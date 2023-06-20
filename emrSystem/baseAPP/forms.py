@@ -14,6 +14,7 @@ class CheckInformationForm(ModelForm):
         fields = '__all__'
 
 class ProviderInformationForm(ModelForm): 
+    required_css_class = 'required'
     class Meta:
         model = ProviderInformation
         fields = '__all__'

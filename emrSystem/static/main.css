@@ -16,3 +16,7 @@ table,
       td {
         text-align: center;
       }
+label.required::after {
+        content: ' *';
+        color: red;
+    }
